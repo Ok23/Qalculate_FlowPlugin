@@ -1,12 +1,12 @@
 {
-  "ID": "CEA0FDFC6D3B4085823D60DC76F28844",
-  "ActionKeyword": "hc",
-  "Name": "Hello World CSharp",
-  "Description": "Hello World CSharp",
-  "Author": "happlebao",
+  "ID": "D2D2C43B034D421DB66EE0C79D6C2A1C",
+  "ActionKeyword": "qa",
+  "Name": "Qalculate!",
+  "Description": "Use Qalculate! as calculator",
+  "Author": "Ok23",
   "Version": "1.0.0",
   "Language": "csharp",
-  "Website": "https://github.com/Flow-Launcher/plugin-samples",
-  "ExecuteFileName": "HelloWorldCSharp.dll",
-  "IcoPath": "Images\\app.png"
+  "Website": "",
+  "ExecuteFileName": "Qalculate_FlowPlugin.dll",
+  "IcoPath": "qalculate.png"
 }
