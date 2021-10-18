@@ -54,13 +54,14 @@ public class Main : IPlugin
 
 	string getProcOutput(string input, bool terse = false)
 	{
-		process.StartInfo.Arguments = " -m 2500 ";
+		process.StartInfo.Arguments = " -m 1500 ";
 		if (terse)
 			process.StartInfo.Arguments += "-t ";
 		process.StartInfo.Arguments += '\"' + input + '\"';
 		process.Start();
 		var output = process.StandardOutput.ReadToEnd();
-		output = output.Substring(0, output.Length - 2);
+		if (output.Length > 0)
+			output = output.Substring(0, output.Length - 2);
 		process.WaitForExit();
 		return output;
 	}
