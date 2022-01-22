@@ -10,6 +10,7 @@ public class Main : IPlugin
 	Process process;
 	public void Init(PluginInitContext context)
 	{
+		context.CurrentPluginMetadata.ActionKeywords.Add("qap");
 		ProcessStartInfo processStartInfo = new ProcessStartInfo
 		{
 			FileName = "C:/Program Files/Qalculate/qalc.exe",
@@ -27,20 +28,24 @@ public class Main : IPlugin
 
 	public List<Result> Query(Query query)
 	{
-		string processOutput = getProcOutput(query.Search);
+		string procArguments = " -m 1500 ";
+		if (query.ActionKeyword == "qap")
+		{
+			procArguments = " -p 10 -m 1500 ";
+		}
+		string processOutput = getProcOutput(query.Search, procArguments);
 		bool resultIsMultiLine = processOutput.IndexOf('\n') == -1;
 		List<Result> result = new List<Result> { };
-
 		result.Add(new Result
 		{
-
 			IcoPath = "qalculate.png",
 			Score = 1,
 			Action = e =>
 			{
-				var input = query.Search;
-				var output = getProcOutput(input, true);
-				System.Windows.Clipboard.SetText(output);
+				string resInput = query.Search;
+				string resArgs = procArguments + " -t ";
+				var output = getProcOutput(resInput, resArgs);
+				Clipboard.SetText(output);
 				return true;
 			}
 		});
@@ -48,21 +53,18 @@ public class Main : IPlugin
 			result[0].Title = processOutput;
 		else
 			result[0].SubTitle = processOutput;
-
 		return result;
 	}
 
-	string getProcOutput(string input, bool terse = false)
+	string getProcOutput(string input, string arguments)
 	{
-		process.StartInfo.Arguments = " -m 1500 ";
-		if (terse)
-			process.StartInfo.Arguments += "-t ";
+		process.StartInfo.Arguments = arguments;
 		process.StartInfo.Arguments += '\"' + input + '\"';
 		process.Start();
 		var output = process.StandardOutput.ReadToEnd();
+		try { if (!process.HasExited) process.WaitForExit(); } catch (System.InvalidOperationException) { }
 		if (output.Length > 0)
 			output = output.Substring(0, output.Length - 2);
-		process.WaitForExit();
 		return output;
 	}
 
