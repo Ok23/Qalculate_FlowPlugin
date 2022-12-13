@@ -2,24 +2,35 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Flow.Launcher.Plugin;
-
-
+using System;
+using System.IO;
 
 public class Main : IPlugin
 {
 	Process process;
+	string qalculatePath;
 	public void Init(PluginInitContext context)
 	{
+		if (Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + "/Qalculate/qalc.exe" is var programFilesFolder && System.IO.File.Exists(programFilesFolder))
+			qalculatePath = programFilesFolder;
+		else if (Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + "/Qalculate/qalc.exe" is var programFilesX86Folder && System.IO.File.Exists(programFilesX86Folder))
+			qalculatePath = programFilesX86Folder;
+		else if ("qalc.exe" is var rootFolder && System.IO.File.Exists(rootFolder))
+			qalculatePath = rootFolder;
+		else if ("/qalculate/qalc.exe" is var portableFolder && System.IO.File.Exists(portableFolder))
+			qalculatePath = portableFolder;
+		else
+			throw new FileNotFoundException("Qalculate not found");
+
 		context.CurrentPluginMetadata.ActionKeywords.Add("qap");
 		ProcessStartInfo processStartInfo = new ProcessStartInfo
 		{
-			FileName = "C:/Program Files/Qalculate/qalc.exe",
+			FileName = qalculatePath,
 			Arguments = "-e 0",
 			UseShellExecute = false,
 			RedirectStandardOutput = true,
 			RedirectStandardInput = true,
 			CreateNoWindow = true,
-
 		};
 		process = new Process { };
 		process.StartInfo = processStartInfo;
