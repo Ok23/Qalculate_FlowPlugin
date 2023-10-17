@@ -39,6 +39,8 @@ public class Main : IPlugin
 
 	public List<Result> Query(Query query)
 	{
+		if (string.IsNullOrWhiteSpace(query.Search))
+			return new List<Result>();
 		string procArguments = " -m 1500 ";
 		if (query.ActionKeyword == "qap")
 		{
@@ -60,10 +62,16 @@ public class Main : IPlugin
 				return true;
 			}
 		});
-		if (resultIsMultiLine)
-			result[0].Title = processOutput;
-		else
-			result[0].SubTitle = processOutput;
+		bool hasBeenWarningsOrErrors = false;
+		while (processOutput.StartsWith("warning:") || processOutput.StartsWith("error:") || processOutput.StartsWith("предупреждение:") || processOutput.StartsWith("ошибка:"))
+		{
+			var indexOfEndl = processOutput.IndexOf('\n');
+			if (hasBeenWarningsOrErrors) result[0].SubTitle += '\n';
+			result[0].SubTitle += processOutput.Substring(0, indexOfEndl - 1);
+			processOutput = processOutput.Remove(0, indexOfEndl + 1);
+			hasBeenWarningsOrErrors = true;
+		}
+		result[0].Title = processOutput;
 		return result;
 	}
 
