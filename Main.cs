@@ -42,7 +42,7 @@ public class Main : IPlugin
 		if (string.IsNullOrWhiteSpace(query.Search))
 			return new List<Result>();
 		string procArguments = query.ActionKeyword == "qap" ? " -p 10 " : "";
-		procArguments += " -set \"percent 1\" -set \"decimal comma off\" -set \"group 1\" -set \"binpref on\" -m 1500 ";
+		procArguments += " -set \"percent 1\" -set \"decimal comma off\" -set \"group 1\" -set \"binpref on\" -set \"parsing mode conventional\" -m 1500 ";
 
 		string processOutput = getProcOutput(query.Search, procArguments);
 		bool resultIsMultiLine = processOutput.IndexOf('\n') == -1;
